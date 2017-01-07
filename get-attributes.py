@@ -10,6 +10,16 @@ def chunks(l, n):
     for i in range(0, len(l), n):
         yield l[i:i + n]
 
+def convert_all_floats_to_long_string(record):
+
+    return dict(zip(
+      record.keys(),
+      ["{0:.16f}".format(value)
+      if type(value)==float
+      else value
+      for value in record.values()]
+    ))
+
 config = ConfigParser.ConfigParser()
 config.read('params')
 
@@ -33,7 +43,11 @@ if token:
             sp.audio_features(tracks=chunk)
         )
 
-    features = [f for f_chunk in feature_chunks for f in f_chunk]
+
+    features = [
+      convert_all_floats_to_long_string(f)
+      for f_chunk in feature_chunks for f in f_chunk if type(f)==dict
+    ]
 
     with open('audio_features.txt', 'w') as file:
         file.writelines([json.dumps(f)+'\n' for f in features])
