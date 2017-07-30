@@ -1,1 +1,1 @@
-import spotify
+import spotify_api

@@ -1,0 +1,6 @@
+Unfortunately auto-detection of schemas isn't supported in google.cloud.bigquery at the moment.
+
+Workaround:
+ 1. Manually upload a file in the web ui with auto-detection enabled
+ 2. Connect to the table with google.cloud.bigquery
+ 3. Store the schema object with pickle to use it later
