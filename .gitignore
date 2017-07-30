@@ -4,6 +4,7 @@ old
 .cache*
 .idea
 
+*.pyc
 *.txt
 *.schema
 *.csv
