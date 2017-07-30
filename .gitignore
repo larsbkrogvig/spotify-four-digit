@@ -1,4 +1,12 @@
 params
+old
+
 .cache*
+.idea
+
 *.txt
 *.schema
+*.csv
+
+data_acquisition/genuis/*
+
