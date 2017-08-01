@@ -38,7 +38,7 @@ def get_albums(token, uris, sample=False):
     album_chunks = []
     chunk_size = 20
     for i, chunk in enumerate(chunks(uris, chunk_size)):
-        print "Fetching track chunk {}/{:.0f}".format(i + 1, math.ceil(len(uris)/float(chunk_size)))
+        print "Fetching album chunk {}/{:.0f}".format(i + 1, math.ceil(len(uris)/float(chunk_size)))
         album_chunks.append(sp.albums(albums=chunk))
         if sample:
             print "Sample run, stopping"
