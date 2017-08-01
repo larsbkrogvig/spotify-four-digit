@@ -13,7 +13,9 @@ import db
 
 VALID_ARGUMENTS = [
     'get_tracks',
+    'get_albums',
     'upload_tracks',
+    'query_album_ids',
     'print_token'
 ]
 
@@ -22,27 +24,35 @@ def main(argv):
     action, sample = get_options_and_aruments(argv)
 
     if action == 'print_token':
-
         print get_token()
 
     if action == 'get_tracks':
-
         file_name = 'tracks{}.txt'.format('' if not sample else '_sample')
-
         token = get_token()
-        uris = get_uris()
+        ids = get_track_ids()
 
-        tracks = data_acquisition.spotify_api.get_tracks(token, uris, sample=sample)
+        tracks = data_acquisition.spotify_api.get_tracks(token, ids, sample=sample)
+        write_to_file(tracks, file_name)
+
+    if action == 'get_albums':
+        file_name = 'albmus{}.txt'.format('' if not sample else '_sample')
+        token = get_token()
+        ids = list(db.bq.get_album_ids(sample))
+
+        tracks = data_acquisition.spotify_api.get_albums(token, ids, sample=sample)
         write_to_file(tracks, file_name)
 
     if action == 'upload_tracks':
-
         file_name = 'tracks{}.txt'.format('' if not sample else '_sample')
         table_name = 'tracks{}'.format('' if not sample else '_sample')
-
         schema = load_schema_from_local_file('tracks')
 
         db.bq.upload_to_table(file_name, table_name, schema)
+
+    if action == 'query_album_ids':
+
+        album_ids = db.bq.get_album_ids(sample)
+        write_to_file(album_ids, 'album_id{}.txt'.format('' if not sample else '_sample'), text=True)
 
     pass
 
@@ -93,12 +103,12 @@ def get_token(scope=None):
     return token
 
 
-def get_uris():
-    """Return a list of uris read from local file \"uris.txt\""""
+def get_track_ids():
+    """Return a list of ids read from local file \"ids.txt\""""
     try:
         with open('playlist/uris.txt', 'r') as f:
-            uris = [line.rstrip('\n').split(':')[2] for line in f.readlines()]
-            return uris
+            ids = [line.rstrip('\n').split(':')[2] for line in f.readlines()]
+            return ids
     except Exception as err:
         print err
         sys.exit(1)
@@ -129,11 +139,11 @@ def get_options_and_aruments(argv):
     return action, sample
 
 
-def write_to_file(objects, file_name):
-    """Write the objects in `objects` as jsons to file `file_name`"""
+def write_to_file(objects, file_name, text=False):
+    """Write the objects in `objects` as jsons to file `file_name`, or write text if `text` is True"""
 
     with open(file_name, 'w') as out_file:
-        out_file.writelines([json.dumps(obj)+'\n' for obj in objects])
+        out_file.writelines([obj+'\n' if text else json.dumps(obj)+'\n' for obj in objects])
         print "Saved to {0}".format(file_name)
 
     pass
