@@ -11,13 +11,33 @@ from spotipy import util
 import data_acquisition
 import db
 
+VALID_ACTIONS = [
+    'get',
+    'get_schema',
+    'upload',
+    'query_ids'
+]
+
+VALID_DOMAINS = [
+    'tracks',
+    'albums',
+    'artists',
+    'audio_features'
+]
+
 VALID_ARGUMENTS = [
     'get_tracks',
-    'get_albums',
     'upload_tracks',
+    'get_schema_tracks',
     'query_album_ids',
+    'get_albums',
+    'get_schema_albums',
+    'upload_albums',
     'print_token'
 ]
+
+PATH_DOWNLOAD = 'data_acquisition/downloaded'
+PATH_SCHEMA = 'db/schema'
 
 
 def main(argv):
@@ -34,40 +54,68 @@ def main(argv):
         tracks = data_acquisition.spotify_api.get_tracks(token, ids, sample=sample)
         write_to_file(tracks, file_name)
 
+    if action == 'get_schema_tracks':
+
+        db.bq.connect_to_table_and_pickle_schema('tracks_sample', '{}/tracks.schema'.format(PATH_SCHEMA))
+
     if action == 'upload_tracks':
-        file_name = 'tracks{}.txt'.format('' if not sample else '_sample')
+
+        file_name = '{}/tracks{}.txt'.format(PATH_DOWNLOAD, '' if not sample else '_sample')
         table_name = 'tracks{}'.format('' if not sample else '_sample')
-        schema = load_schema_from_local_file('tracks')
+        schema = load_schema_from_local_file('{}/tracks.schema'.format(PATH_SCHEMA))
 
         db.bq.upload_to_table(file_name, table_name, schema)
-
-    if action == 'get_albums':
-        file_name = 'albums{}.txt'.format('' if not sample else '_sample')
-        token = get_token()
-        ids = load_ids_from_file('album_ids_sample.txt', uris=False)
-
-        print ids
-
-        tracks = data_acquisition.spotify_api.get_albums(token, ids, sample=sample)
-        write_to_file(tracks, file_name)
 
     if action == 'query_album_ids':
 
         album_ids = db.bq.get_album_ids(sample)
-        write_to_file(album_ids, 'album_ids{}.txt'.format('' if not sample else '_sample'), text=True)
+
+        write_to_file(
+            album_ids,
+            '{}/ids_albums{}.txt'.format(PATH_DOWNLOAD, '' if not sample else '_sample'),
+            text=True
+        )
+
+    if action == 'get_albums':
+
+        file_name = '{}/albums{}.txt'.format(PATH_DOWNLOAD, '' if not sample else '_sample')
+        token = get_token()
+
+        ids = load_ids_from_file(
+            '{}/ids_albums{}.txt'.format(PATH_DOWNLOAD, '' if not sample else '_sample'),
+            uris=False
+        )
+
+        albums = data_acquisition.spotify_api.get_albums(token, ids, sample=sample)
+        write_to_file(albums, file_name)
+
+    if action == 'get_schema_albums':
+
+        db.bq.connect_to_table_and_pickle_schema('albums_sample', '{}/albums.schema'.format(PATH_SCHEMA))
+
+    if action == 'upload_albums':
+
+        file_name = '{}/albums{}.txt'.format(PATH_DOWNLOAD, '' if not sample else '_sample')
+        table_name = 'albums{}'.format('' if not sample else '_sample')
+        schema = load_schema_from_local_file('{}/albums.schema'.format(PATH_SCHEMA))
+
+        db.bq.upload_to_table(file_name, table_name, schema)
+
+
+
 
     pass
 
 
-def load_schema_from_local_file(table_name):
+def load_schema_from_local_file(file_name):
     """Loads a manually created pickled schema file"""
-    print "Loading schema for `{}` table from file".format(table_name)
+    print "Loading schema from file '{}'".format(file_name)
     try:
-        with open('db/schema/{}.pickle'.format(table_name)) as schema_file:
+        with open(file_name) as schema_file:
             schema = pickle.load(schema_file)
             return schema
     except Exception as err:
-        print err, '\nUnable to load schema {}.pickle'.format(table_name)
+        print err, "\nUnable to load schema from file '{}'".format(file_name)
         sys.exit(1)
     pass
 
@@ -77,7 +125,7 @@ def get_token(scope=None):
     Look for cached access token, get a new one if expired or unavailable"""
 
     config = ConfigParser.ConfigParser()
-    config.read('params')
+    config.read('.params')
     username = config.get('SPOTIFY', 'USER_NAME')
 
     token = None

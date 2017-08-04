@@ -10,7 +10,7 @@ def chunks(l, n):
         yield l[i:i + n]
 
 config = ConfigParser.ConfigParser()
-config.read('params')
+config.read('.params')
 
 username = config.get('SPOTIFY','USER_NAME')
 playlist_id = config.get('SPOTIFY','PLAYLIST_ID')
