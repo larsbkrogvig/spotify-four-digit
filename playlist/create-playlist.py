@@ -15,7 +15,7 @@ config.read('.params')
 username = config.get('SPOTIFY','USER_NAME')
 playlist_id = config.get('SPOTIFY','PLAYLIST_ID')
 
-with open('uris.txt', 'r') as f:
+with open('uri_input.txt', 'r') as f:
     data = [line.rstrip('\n') for line in f.readlines()]
 
 token = util.prompt_for_user_token(

@@ -69,6 +69,7 @@ def connect_to_table_and_pickle_schema(table_name, schema_file_name):
     schema = table.schema
 
     with open(schema_file_name, 'wb') as schema_file:
+        print "Saving schema to {}".format(schema_file_name)
         pickle.dump(schema, schema_file)
 
     pass
