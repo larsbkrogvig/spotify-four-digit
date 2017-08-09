@@ -11,7 +11,7 @@ VALID_DOMAINS = [
 ]
 
 
-def run(argv):
+def bq_get_schema(argv):
 
     try:
         if not argv:

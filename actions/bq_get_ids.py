@@ -9,7 +9,7 @@ VALID_DOMAINS = [
 ]
 
 
-def run(argv, sample):
+def bq_get_ids(argv, sample):
 
     try:
         if not argv:

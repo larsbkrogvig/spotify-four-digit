@@ -10,7 +10,7 @@ VALID_DOMAINS = [
 ]
 
 
-def run(argv, sample):
+def bq_upload(argv, sample):
 
     try:
         if not argv:

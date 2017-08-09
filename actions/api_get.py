@@ -16,7 +16,7 @@ VALID_DOMAINS = [
 ]
 
 
-def run(argv, sample):
+def api_get(argv, sample):
 
     try:
         if not argv:

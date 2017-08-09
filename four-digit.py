@@ -25,19 +25,19 @@ def main(argv):
         sys.exit(2)
 
     if action == 'setup':
-        actions.setup.run()
+        actions.setup()
 
     if action == 'api_get':
-        actions.api_get.run(args, sample)
+        actions.api_get(args, sample)
 
     if action == 'bq_get_schema':
-        actions.bq_get_schema.run(args)
+        actions.bq_get_schema(args)
 
     if action == 'bq_upload':
-        actions.bq_upload.run(args, sample)
+        actions.bq_upload(args, sample)
 
     if action == 'bq_get_ids':
-        actions.bq_get_ids.run(args, sample)
+        actions.bq_get_ids(args, sample)
 
     pass
 
