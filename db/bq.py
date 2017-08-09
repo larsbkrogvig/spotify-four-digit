@@ -91,7 +91,7 @@ def _get_bigquery_client_and_dataset():
     return dataset, bigquery_client
 
 
-def _connect_to_table_and_pickle_schema(table_name, schema_file_name):
+def connect_to_table_and_pickle_schema(table_name, schema_file_name):
     """Connect to a bigquery table and pickle the schema (Workaround for no auto-detection of schema)"""
 
     dataset, _ = _get_bigquery_client_and_dataset()

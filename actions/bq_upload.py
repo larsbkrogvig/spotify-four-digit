@@ -7,6 +7,7 @@ import constants
 VALID_DOMAINS = [
     'tracks',
     'albums',
+    'artists',
 ]
 
 
@@ -27,9 +28,9 @@ def bq_upload(argv, sample):
 
     file_name = '{}/{}{}.txt'.format(constants.PATH_OBJECTS, domain, '' if not sample else '_sample')
     table_name = '{}{}'.format(domain, '' if not sample else '_sample')
-    schema = load_schema_from_local_file('{}/{}.schema'.format(constants.PATH_SCHEMA, domain))
+    schema = _load_schema_from_local_file('{}/{}.schema'.format(constants.PATH_SCHEMA, domain))
 
-    db.bq.upload_to_table(file_name, table_name, schema)
+    db.bq_upload_to_table(file_name, table_name, schema)
 
     pass
 

@@ -31,7 +31,7 @@ def bq_get_ids(argv, sample):
         ids = db.bq_get_album_ids(sample)
 
     if domain == 'artists':
-        ids = db.bq_get_album_ids(sample)
+        ids = db.bq_get_artist_ids(sample)
 
     util.write_to_file(
         ids,

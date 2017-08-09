@@ -13,6 +13,7 @@ import util
 VALID_DOMAINS = [
     'tracks',
     'albums',
+    'artists',
 ]
 
 
@@ -31,17 +32,19 @@ def api_get(argv, sample):
         print "Usage: four-digit.py [-s] api_get [{0}] ".format(' | '.join(VALID_DOMAINS))
         sys.exit(2)
 
-    token = get_token()
+    token = _get_token()
 
     file_name = '{}/{}{}.txt'.format(constants.PATH_OBJECTS, domain, '' if not sample else '_sample')
-    ids = load_ids_from_file('{}/{}{}.txt'.format(constants.PATH_IDS, domain, '' if not sample else '_sample'))
+    ids = _load_ids_from_file('{}/{}{}.txt'.format(constants.PATH_IDS, domain, '' if not sample else '_sample'))
 
     objects = None
 
     if domain == 'tracks':
-        objects = data_acquisition.spotify_api.get_tracks(token, ids, sample)
+        objects = data_acquisition.spotify_api_get_tracks(token, ids, sample)
     if domain == 'albums':
-        objects = data_acquisition.spotify_api.get_albums(token, ids, sample)
+        objects = data_acquisition.spotify_api_get_albums(token, ids, sample)
+    if domain == 'artists':
+        objects = data_acquisition.spotify_api_get_artists(token, ids, sample)
 
     util.write_to_file(objects, file_name)
 
