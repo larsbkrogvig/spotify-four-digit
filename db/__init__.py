@@ -1,1 +1,1 @@
-import bq
+from bq import *

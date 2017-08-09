@@ -26,7 +26,7 @@ def bq_get_schema(argv):
         print "Usage: four-digit.py [-s] bq_get_schema [{0}] ".format(' | '.join(VALID_DOMAINS))
         sys.exit(2)
 
-    db.bq.connect_to_table_and_pickle_schema(
+    db.bq._connect_to_table_and_pickle_schema(
         '{}_sample'.format(domain),
         '{}/{}.schema'.format(constants.PATH_SCHEMA, domain))
 

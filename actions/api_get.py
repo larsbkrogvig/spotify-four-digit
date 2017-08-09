@@ -48,7 +48,7 @@ def api_get(argv, sample):
     pass
 
 
-def get_token(scope=None):
+def _get_token(scope=None):
     """Return access token for the Spotify API with scope `scope`.
     Look for cached access token, get a new one if expired or unavailable"""
 
@@ -81,7 +81,7 @@ def get_token(scope=None):
     return token
 
 
-def load_ids_from_file(file_name):
+def _load_ids_from_file(file_name):
     """Return a list of ids read from local file `file_name`"""
     try:
         with open(file_name, 'r') as f:

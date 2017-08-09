@@ -34,7 +34,7 @@ def bq_upload(argv, sample):
     pass
 
 
-def load_schema_from_local_file(file_name):
+def _load_schema_from_local_file(file_name):
     """Loads a manually created pickled schema file"""
     print "Loading schema from file '{}'".format(file_name)
     try:

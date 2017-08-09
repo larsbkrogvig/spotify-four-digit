@@ -6,6 +6,7 @@ import util
 
 VALID_DOMAINS = [
     'albums',
+    'artists',
 ]
 
 
@@ -25,8 +26,12 @@ def bq_get_ids(argv, sample):
         sys.exit(2)
 
     ids = None
+
     if domain == 'albums':
-        ids = db.bq.get_album_ids(sample)
+        ids = db.bq_get_album_ids(sample)
+
+    if domain == 'artists':
+        ids = db.bq_get_album_ids(sample)
 
     util.write_to_file(
         ids,
