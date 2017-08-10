@@ -8,6 +8,7 @@ VALID_DOMAINS = [
     'tracks',
     'albums',
     'artists',
+    'audio_features',
 ]
 
 

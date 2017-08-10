@@ -14,6 +14,7 @@ VALID_DOMAINS = [
     'tracks',
     'albums',
     'artists',
+    'audio_features'
 ]
 
 
@@ -34,18 +35,22 @@ def api_get(argv, sample):
 
     token = _get_token()
 
-    file_name = '{}/{}{}.txt'.format(constants.PATH_OBJECTS, domain, '' if not sample else '_sample')
-    ids = _load_ids_from_file('{}/{}{}.txt'.format(constants.PATH_IDS, domain, '' if not sample else '_sample'))
-
     objects = None
 
     if domain == 'tracks':
+        ids = _load_ids_for_domain('tracks')
         objects = data_acquisition.spotify_api_get_tracks(token, ids, sample)
     if domain == 'albums':
+        ids = _load_ids_for_domain('albums')
         objects = data_acquisition.spotify_api_get_albums(token, ids, sample)
     if domain == 'artists':
+        ids = _load_ids_for_domain('artists')
         objects = data_acquisition.spotify_api_get_artists(token, ids, sample)
+    if domain == 'audio_features':
+        ids = _load_ids_for_domain('tracks')
+        objects = data_acquisition.spotify_api_get_audio_features(token, ids, sample)
 
+    file_name = '{}/{}{}.txt'.format(constants.PATH_OBJECTS, domain, '' if not sample else '_sample')
     util.write_to_file(objects, file_name)
 
     pass
@@ -84,8 +89,10 @@ def _get_token(scope=None):
     return token
 
 
-def _load_ids_from_file(file_name):
-    """Return a list of ids read from local file `file_name`"""
+def _load_ids_for_domain(domain):
+    """Return a list of ids read from local file with ids from domain `domain`"""
+
+    file_name = '{}/{}.txt'.format(constants.PATH_IDS, domain)
     try:
         with open(file_name, 'r') as f:
             ids = [line.rstrip('\n') for line in f.readlines()]

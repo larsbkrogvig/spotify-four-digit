@@ -56,6 +56,22 @@ def spotify_api_get_artists(token, ids, sample=False):
     return [a for a_chunk in artist_chunks for a in a_chunk['artists']]
 
 
+def spotify_api_get_audio_features(token, ids, sample=False):
+    """Download audio features for tracks with ids in `ids`, using access token `token`"""
+    sp = _get_spotify_client(token)
+
+    feature_chunks = []
+    chunk_size = 100
+    for i, chunk in enumerate(_chunks(ids, chunk_size)):
+        print "Fetching audio features chunk {}/{:.0f}".format(i + 1, math.ceil(len(ids)/float(chunk_size)))
+        feature_chunks.append(sp.audio_features(tracks=chunk))
+        if sample:
+            print "Sample run, stopping"
+            break
+
+    return [f for f_chunk in feature_chunks for f in f_chunk]
+
+
 def _get_spotify_client(token):
     """Return a Spotify client using `token` for authorization and warn if it is missing"""
 
